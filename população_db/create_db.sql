@@ -1,37 +1,40 @@
+CREATE schema tickets4u;
+SET search_path to tickets4u;
+
 CREATE TABLE EMPRESA (
-	CNPJ	INTEGER PRIMARY KEY,
-	nome_fantasia	VARCHAR(100) NOT NULL UNIQUE,
-	localizacao	VARCHAR(100),
-	telefone	VARCHAR(12),
-	tipo_estabelecimento	VARCHAR(100)
+	CNPJ	NUMERIC(14) PRIMARY KEY,
+	nome_fantasia	VARCHAR(2000) NOT NULL UNIQUE,
+	localizacao	VARCHAR(2000),
+	telefone	VARCHAR(20),
+	tipo_estabelecimento	VARCHAR(2000)
 );
 
 CREATE TABLE CLIENTE (
-	CPF	INTEGER PRIMARY KEY,
-	login	VARCHAR(20) UNIQUE,
-	senha	VARCHAR(20),
-	nome	VARCHAR(50),
-	email	VARCHAR(20)
+	CPF	NUMERIC(11) PRIMARY KEY,
+	login	VARCHAR(2000) UNIQUE,
+	senha	VARCHAR(2000),
+	nome	VARCHAR(2000),
+	email	VARCHAR(2000)
 );
 
 CREATE TABLE LOCAL (
-	nome	VARCHAR(30) UNIQUE NOT NULL,
+	nome	VARCHAR(200) UNIQUE NOT NULL,
 	id_local	INTEGER PRIMARY KEY,
-	mapa	VARCHAR(30),
-	logradouro	VARCHAR(30) NOT NULL,
-	sala	VARCHAR(10),
+	mapa	VARCHAR(200),
+	logradouro	VARCHAR(200) NOT NULL,
+	sala	VARCHAR(200),
 	capacidade	INTEGER
 );
 
 CREATE TABLE EVENTO (
-	CNPJ INTEGER UNIQUE NOT NULL,
+	CNPJ	NUMERIC(14),
 	-- a exclusão do cnpj de uma empresa será bloqueada, mas 
 	-- a alteração será propagada
 	FOREIGN KEY(CNPJ) REFERENCES EMPRESA(CNPJ)
 		ON DELETE RESTRICT ON UPDATE CASCADE,
 	id_evento	INTEGER PRIMARY KEY,
-	regulamento	VARCHAR(100),
-	descricao	VARCHAR(100),
+	regulamento	VARCHAR(2000),
+	descricao	VARCHAR(2000),
 	num_bilhetes	INTEGER NOT NULL,
 	classificacao_indicativa	VARCHAR(20) NOT NULL,
 	inicio	TIMESTAMP,
@@ -44,15 +47,15 @@ CREATE TABLE FILME (
 	-- subclasse deverão ser aleterados/excluídos também
 	FOREIGN KEY(id_evento) REFERENCES EVENTO(id_evento)
 		ON DELETE CASCADE ON UPDATE CASCADE,
-	titulo	VARCHAR(30) NOT NULL,
-	sinopse	VARCHAR(30) NOT NULL,
-	genero	VARCHAR(10),
-	dub	BOOLEAN,
-	duracao	VARCHAR(10),
-	direcao	VARCHAR(30),
-	distribuicao	VARCHAR(30),
-	tipo_exibicao	VARCHAR(30),
-	produtora	VARCHAR(30)
+	titulo	varchar(200) not NULL,
+	sinopse	varchar(800) not NULL,
+	genero	varchar(200),
+	dub	boolean,
+	duracao	varchar(200),
+	direcao	varchar(200),
+	distribuicao	varchar(200),
+	tipo_exibicao	varchar(200),
+	produtora	varchar(200)
 );
 
 CREATE TABLE PECA_TEATRO (
@@ -61,12 +64,12 @@ CREATE TABLE PECA_TEATRO (
 	-- subclasse deverão ser aleterados/excluídos também
 	FOREIGN KEY(id_evento) REFERENCES EVENTO(id_evento)
 		ON DELETE CASCADE ON UPDATE CASCADE,
-	titulo	VARCHAR(30) NOT NULL,
-	descricao	VARCHAR(30) NOT NULL,
-	genero	VARCHAR(10),
+	titulo	VARCHAR(200) NOT NULL,
+	descricao	VARCHAR(800) NOT NULL,
+	genero	VARCHAR(200),
 	dub	BOOLEAN,
-	duracao	VARCHAR (10),
-	direcao	VARCHAR(30)
+	duracao	VARCHAR (200),
+	direcao	VARCHAR(200)
 );
 
 CREATE TABLE SHOW (
@@ -75,9 +78,9 @@ CREATE TABLE SHOW (
 	-- subclasse deverão ser aleterados/excluídos também
 	FOREIGN KEY(id_evento) REFERENCES EVENTO(id_evento)
 		ON DELETE CASCADE ON UPDATE CASCADE,
-	artista	VARCHAR(30) NOT NULL,
-	genero	VARCHAR(10),
-	local	VARCHAR(30)
+	artista	VARCHAR(200) NOT NULL,
+	genero	VARCHAR(2000),
+	local	VARCHAR(200)
 );
 
 CREATE TABLE ESPORTE (
@@ -106,7 +109,7 @@ CREATE TABLE SESSAO (
 
 
 CREATE TABLE OCORRE (
-	nome VARCHAR(30), 
+	nome VARCHAR(200), 
 	id_local INTEGER,
 	id_sessao INTEGER UNIQUE NOT NULL, 
 	-- se um local é deletado, então mantemos as ocorrências porêm com um local null
@@ -119,13 +122,13 @@ CREATE TABLE OCORRE (
 );
 
 CREATE TABLE GRUPO_DE_INGRESSOS (
-	nome VARCHAR(30), 
+	nome VARCHAR(200), 
 	id_sessao INTEGER UNIQUE NOT NULL, 
 	-- mudanças na sessão são inteiramente propagadas
 	FOREIGN KEY(id_sessao) REFERENCES SESSAO(id_sessao)
 		ON DELETE CASCADE ON UPDATE CASCADE,
 	id_grupo INTEGER PRIMARY KEY, 
-	tipo	VARCHAR(30) NOT NULL,
+	tipo	VARCHAR(200) NOT NULL,
 	vigencia_compra	DATE NOT NULL,
 	tipo_assento	VARCHAR(20),
 	bilhetes_disponiveis	INTEGER NOT NULL
@@ -138,16 +141,16 @@ CREATE TABLE BILHETE (
 	FOREIGN KEY(id_grupo) REFERENCES GRUPO_DE_INGRESSOS(id_grupo)
 		ON DELETE CASCADE ON UPDATE CASCADE,
 	id_bilhete	INTEGER PRIMARY KEY,
-	posicao_mapa	VARCHAR(30) NOT NULL,
-	preco	DECIMAL(10,2) NOT NULL,
+	posicao_mapa	VARCHAR(200) NOT NULL,
+	preco	DECIMAL(200,2) NOT NULL,
 	promocao	BOOLEAN,
 	disponibilidade	BOOLEAN
 );
 
 CREATE TABLE COMPRA (
-	tipo_desconto VARCHAR(30),
+	tipo_desconto VARCHAR(200),
 	data_compra TIMESTAMP,
-	forma_de_pagto VARCHAR(30),
+	forma_de_pagto VARCHAR(200),
 	cpf_comprador INTEGER,
 	id_bilhete INTEGER,
 	FOREIGN KEY (cpf_comprador) references CLIENTE(CPF)
