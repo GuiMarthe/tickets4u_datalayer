@@ -129,21 +129,19 @@ CREATE TABLE GRUPO_DE_INGRESSOS (
 		ON DELETE CASCADE ON UPDATE CASCADE,
 	id_grupo INTEGER PRIMARY KEY, 
 	tipo	VARCHAR(200) NOT NULL,
+	preco	DECIMAL(1000,2) NOT NULL,
 	vigencia_compra	DATE NOT NULL,
 	tipo_assento	VARCHAR(20),
 	bilhetes_disponiveis	INTEGER NOT NULL
 );
 
 CREATE TABLE BILHETE (
-	CNPJ INTEGER UNIQUE  NOT NULL,
 	id_grupo  INTEGER UNIQUE  NOT NULL,
 	-- mudanças nos grupos de ingressos são inteiramente propagadas
 	FOREIGN KEY(id_grupo) REFERENCES GRUPO_DE_INGRESSOS(id_grupo)
 		ON DELETE CASCADE ON UPDATE CASCADE,
 	id_bilhete	INTEGER PRIMARY KEY,
 	posicao_mapa	VARCHAR(200) NOT NULL,
-	preco	DECIMAL(1000,2) NOT NULL,
-	promocao	BOOLEAN,
 	disponibilidade	BOOLEAN 
 );
 
