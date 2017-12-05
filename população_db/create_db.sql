@@ -102,7 +102,7 @@ CREATE TABLE SESSAO (
 	id_sessao	INTEGER PRIMARY KEY,  
 	num_bilhetes	INTEGER NOT NULL CHECK (num_bilhetes > 0),
 	data_hora_inicio TIMESTAMP NOT NULL,
-	data_hora_fim	TIMESTAMP NOT NULL,
+	data_hora_fim	TIMESTAMP,
 	CHECK (data_hora_inicio < data_hora_fim)
 
 );
@@ -142,9 +142,9 @@ CREATE TABLE BILHETE (
 		ON DELETE CASCADE ON UPDATE CASCADE,
 	id_bilhete	INTEGER PRIMARY KEY,
 	posicao_mapa	VARCHAR(200) NOT NULL,
-	preco	DECIMAL(200,2) NOT NULL,
+	preco	DECIMAL(1000,2) NOT NULL,
 	promocao	BOOLEAN,
-	disponibilidade	BOOLEAN
+	disponibilidade	BOOLEAN 
 );
 
 CREATE TABLE COMPRA (
