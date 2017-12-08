@@ -6,10 +6,20 @@ Ele está organizado da seguinte forma:
 
 
 ├── análises - implementação de análises estatísticas sobre os dados do BD
+
+
 ├── apresentação - apresentação realizada em classe
+
+
 ├── docs - Documentação completa do BD
+
+
 ├── população_db - script com comandos SQL para “popular” o BD com dados de teste
+
+
 ├── README.md - esse documento
+
+
 └── scripts - scripts contendo código SQL que implemente as consultas e operações importantes
 
 
