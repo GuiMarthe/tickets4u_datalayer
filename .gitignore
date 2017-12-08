@@ -1,3 +1,4 @@
 .cache
 *.swp
 log
+*.swo
