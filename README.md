@@ -1,6 +1,6 @@
 # Projeto de Banco de Dados - Tickets4you Entrega 3
 
-Esse repositório contém as última entrega do trabalaho de MAC0313 que desenvolvemos ao longo do segundo semestre de 2017.
+Esse repositório contém a última entrega do trabalaho de MAC0313 que desenvolvemos ao longo do segundo semestre de 2017.
 
 Ele está organizado da seguinte forma:
 
@@ -20,7 +20,7 @@ Ele está organizado da seguinte forma:
 ├── README.md - esse documento
 
 
-└── scripts - scripts contendo código SQL que implemente as consultas e operações importantes
+└── scripts - scripts contendo código em python que gera os sql em população_db/
 
-
+O entrypoint dos scripts é ./  
  
