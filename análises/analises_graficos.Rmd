@@ -4,7 +4,7 @@ output: html_notebook
 ---
 
 
-```{r}
+```{r echo=TRUE}
 library(tidyverse)
 library(RPostgreSQL)
 drv <- dbDriver('PostgreSQL')
@@ -12,10 +12,9 @@ con <- dbConnect(drv, dbname="tickets4u")
 dbSendQuery(con, 'set search_path to tickets4u')
 ```
 
-## Análises do lado das empresas
 
 
-```{r}
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
 vendas_mes_query = readr::read_file('./total_vendas_por_empresa_mes.sql')
 
 ggplot2::theme_set(theme_minimal())
@@ -38,10 +37,7 @@ tb %>%
 ```
 
 
-## Análises do lado dos clientes
-
-
-```{r}
+```{r echo=TRUE}
 
 query = "
 SELECT 
@@ -79,7 +75,7 @@ tb %>%
 
 ```
 
-```{r}
+```{r echo=TRUE}
 tb %>% 
   ggplot(aes(tipo_evento, preco)) + 
   geom_boxplot(aes(fill = tipo_evento), show.legend = F, width = 0.3)+
@@ -89,7 +85,7 @@ tb %>%
        )
 ```
 
-```{r}
+```{r echo=TRUE}
 
 tb %>% 
   group_by(tipo_evento) %>% 
