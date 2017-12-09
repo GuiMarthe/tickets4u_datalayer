@@ -149,7 +149,7 @@ CREATE TABLE COMPRA (
 	tipo_desconto VARCHAR(200),
 	data_compra TIMESTAMP,
 	forma_de_pagto VARCHAR(200),
-	cpf_comprador INTEGER,
+	cpf_comprador NUMERIC(11),
 	id_bilhete INTEGER,
 	FOREIGN KEY (cpf_comprador) references CLIENTE(CPF)
 		ON DELETE RESTRICT  ON UPDATE RESTRICT,

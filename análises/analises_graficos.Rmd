@@ -1,0 +1,110 @@
+---
+title: "Análises Tickets4u"
+output: html_notebook
+---
+
+
+```{r}
+library(tidyverse)
+library(RPostgreSQL)
+drv <- dbDriver('PostgreSQL')
+con <- dbConnect(drv, dbname="tickets4u")
+dbSendQuery(con, 'set search_path to tickets4u')
+```
+
+## Análises do lado das empresas
+
+
+```{r}
+vendas_mes_query = readr::read_file('./total_vendas_por_empresa_mes.sql')
+
+ggplot2::theme_set(theme_minimal())
+
+tb <- dbGetQuery(con, vendas_mes_query)
+
+tb %>% 
+  filter(!is.na(mes),
+         lubridate::month(mes) == 12,
+         !is.na(nome_fantasia)
+         ) %>% 
+  mutate(nome_fantasia = as.factor(nome_fantasia) %>% fct_reorder(.,-total_vendas)) %>% 
+  ggplot(aes(x = nome_fantasia, y = total_vendas)) +
+  geom_bar(aes(fill = nome_fantasia), color = 'black', stat = 'identity', show.legend = F) + 
+  theme(axis.text.x = element_text(angle = 90, hjust=1)) +
+  labs(x = NULL,
+       y = 'total de vendas',
+       title = 'Total de bilhetes vendidos em Dez 2017'
+       )
+```
+
+
+## Análises do lado dos clientes
+
+
+```{r}
+
+query = "
+SELECT 
+  case 
+    when e.id_evento in (select id_evento from filme) then 'cinema'
+    when e.id_evento in (select id_evento from peca_teatro) then 'teatro'
+    when e.id_evento in (select id_evento from show) then 'show'
+  else 
+    'esporte'
+  end as tipo_evento,
+  e.id_evento,
+  g.preco,
+  b.id_bilhete
+FROM compra 
+natural join bilhete b
+natural join GRUPO_DE_INGRESSOS g
+natural join sessao s
+natural join evento e
+"
+
+tb <- dbGetQuery(con, query)
+
+tb %>% 
+  group_by(tipo_evento) %>% 
+  summarise(`vendas ($)` = sum(preco),
+            `# de bilhetes` = n()
+            ) %>% 
+  gather(tipo, valor, -tipo_evento) %>% 
+  ggplot(aes(as.factor(tipo_evento), valor)) + 
+  geom_bar(aes(fill = tipo_evento), color = 'black',stat = 'identity', show.legend = F) + 
+  facet_wrap(~tipo, scales = 'free') +
+  labs(x = NULL,
+       title = 'Resultado de Dezembro de 2017 por tipo de evento'
+       )
+
+```
+
+```{r}
+tb %>% 
+  ggplot(aes(tipo_evento, preco)) + 
+  geom_boxplot(aes(fill = tipo_evento), show.legend = F, width = 0.3)+
+  labs(y='preço',
+       x = NULL, 
+       title = 'Distribuição de preços por evento em Dezembro de 2017' 
+       )
+```
+
+```{r}
+
+tb %>% 
+  group_by(tipo_evento) %>% 
+  summarise(preco_medio = mean(preco),
+            preco_sd = sd(preco),
+            n = n(),
+            conf.low = preco_medio - (preco_sd/n)*1.96,
+            conf.high = preco_medio + (preco_sd/n)*1.96
+            ) %>% 
+  ggplot(aes(as.factor(tipo_evento), preco_medio)) + 
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.45) + 
+  geom_point(aes(color = tipo_evento), size = 4, show.legend = F) + 
+  labs(x = NULL,
+       title = 'Resultado de Dezembro de 2017 por tipo de evento',
+      y = 'Preço médio'
+       )
+```
+
